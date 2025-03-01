@@ -129,7 +129,9 @@ hub_download <- function(repo_id, filename, ..., revision = "main", repo_type = 
   }
 
   if (fs::file_exists(blob_path) && !force_download) {
-    fs::link_create(blob_path, pointer_path)
+    # fs::link_create(blob_path, pointer_path)
+    # Copy the file instead of symlinking
+    fs::file_copy(blob_path, pointer_path, overwrite = TRUE)
     return(pointer_path)
   }
 
@@ -159,7 +161,9 @@ hub_download <- function(repo_id, filename, ..., revision = "main", repo_type = 
 
     # fs::link_create doesn't work for linking files on windows.
     try(fs::file_delete(pointer_path), silent = TRUE) # delete the link to avoid warnings
-    file.symlink(blob_path, pointer_path)
+    # file.symlink(blob_path, pointer_path)
+    # Copy the file instead of symlinking
+    fs::file_copy(blob_path, pointer_path, overwrite = TRUE)
   })
 
   pointer_path
